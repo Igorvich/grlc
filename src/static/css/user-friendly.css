@@ -1,0 +1,181 @@
+html{
+    min-height: 100%;
+    height: auto;
+}
+body {
+    text-align: left;
+}
+#wordsContainingInput{
+    min-width: 400px;
+    font-size: 18px;
+}
+#searchButton{
+    font-size: 18px;
+}
+.repo-search{
+    text-align: center;
+    text-align: -webkit-center;
+    text-align: -moz-center;
+    margin-bottom: 20px;
+}
+.repo-search-input{
+    width:30%;
+}
+#repo-search-result{
+    vertical-align: top;
+    padding: 5px;
+    min-height: 40px;
+    margin-bottom: 50px;
+}
+.repo-search-result-data-container{
+    display: block;
+}
+.repo-search-result-execute-container{
+    justify-content: flex-start;
+    align-content: stretch;
+    display: flex;
+}
+.repo-search-result-item{
+    margin-bottom: 10px;
+}
+.repo-search-result-item-header{
+    min-width: 50px;
+    min-height: 30px;
+    padding: 6px 5px 2px 5px ;
+    border-top-right-radius: 10px;
+    border-top-left-radius: 10px;
+}
+.repo-search-result-item-body{
+    min-width: 50px;
+    min-height: 50px;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    padding: 2px 5px 2px 5px;
+    margin-bottom: 5px;
+    text-align: left;
+}
+.repo-search-result-item-collapse-button{
+    min-width: 100px;
+    min-height: 10px;
+    font-size: 14px;
+    margin-bottom: 2px;
+    margin-right: 5px;
+}
+.repo-search-result-item-summary-label{
+    min-width:100px;
+    min-height: 10px;
+}
+.repo-search-result-item-url_link{
+    min-width:100px;
+    min-height: 10px;
+    display: inline-block;
+    margin-bottom: 5px;
+}
+.repo-search-result-item-execute_button{
+    min-width: 100px;
+    min-height: 10px;
+    font-size: 14px;
+    margin-bottom: 2px;
+    margin-right: 10px;
+}
+.repo-search-result-data-convert-button{
+    margin-right: 5px;
+    margin-bottom: 5px;
+    margin-top: 5px;
+}
+.repo-search-result-data-convert-json{
+    margin-top: 5px;
+    font-size: 14px;
+}
+.repo-search-result-yasgui-input{
+    display: none;
+    white-space: pre-wrap;
+}
+.returned-data-table-container{
+    overflow-y: scroll;
+    max-height: 200px;
+    border: 1px solid;
+    margin-top: 4px;
+}
+.returned-data-table{
+    display: table;
+    width: 100%;
+    max-width: 100%;
+    margin-bottom: 5px;
+    background-color: transparent;
+    border-spacing: 0;
+    border-collapse: collapse;
+}
+.returned-data-table:nth-child(odd){
+    background-color: #7e7b6d;
+}
+.returned-data-table:nth-child(even){
+    background-color: #eeeeee;
+}
+.returned-data-export-container{
+    justify-content: flex-start;
+}
+.returned_data_export_label{
+    display: block;
+    margin-top: 5px;
+}
+.toggle-theme-button{
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    float: left;
+    margin-left: 10px;
+}
+.home-button{
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    /*margin-left: -120px;*/
+}
+.yasgui_div{
+    white-space: pre-wrap;
+}
+th, td{
+    padding-left: 2px;
+}
+@media (min-width: 768px) {
+    .github-container{
+        width: 98%;
+    }
+}
+@media (min-width: 992px){
+    .github-container{
+        width: 900px;
+    }
+}
+.user-friendly-wrapper {
+    display: table;
+    width: 100%;
+    height: 100%; /* For at least Firefox */
+    height: -webkit-fill-available;
+    min-height: 100%;
+    -webkit-box-shadow: inset 0 0 65px rgba(0,0,0,.5);
+    box-shadow: inset 0 0 65px rgba(0,0,0,.5);
+}
+.user-friendly-wrapper-inner {
+    vertical-align: top;
+}
+.user-friendly-menu-banner{
+    height:50px;
+    text-align: center;
+}
+.github-container {
+    margin-right: auto;
+    margin-left: auto;
+}
+@media (min-width: 768px) {
+    .github-container{
+        width: 98%;
+    }
+}
+@media (min-width: 992px){
+    .github-container{
+        width: 900px;
+    }
+}
+hr{
+    border-radius: 2px;
+}

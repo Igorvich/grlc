@@ -250,5 +250,49 @@ def swagger_spec(user, repo, sha=None, content=None):
 
     return resp_spec
 
+# Returns the user friendly page of the application. Default without any data.
+@app.route('/user-friendly', methods=['GET'])
+def user_friendly():
+    return render_template('userFriendly.html')
+
+# Returns data collected when looking for a specific word on github.
+# This is returned as a JSON file for processing.
+@app.route('/user-friendly/<type_of_search>/<variables>/<organisation>', methods=['GET'])
+def searchGithubUserFriendly(type_of_search, variables, organisation):
+    rate_limit = utils.get_rate_limit()
+    rate_limit_is_not_zero = rate_limit > 10
+    if rate_limit_is_not_zero:
+        data = utils.search_github(type_of_search, variables, organisation)
+    else:
+        data = utils.get_rate_limit_reset_data()
+    data = jsonify(data)
+    return data
+
+# Returns the rate limit data for the given Github Access token as a JSON file.
+@app.route('/user-friendly/rate_limit', methods=['GET'])
+def getRateLimit():
+    data = utils.get_rate_limit_reset_data()
+    data = jsonify(data)
+    return data
+
+# Collects data for SPARQL
+@app.route('/collect-data/<user>/<repo>/<file>', methods=['GET'])
+def collectDataForSPARQLQuery(user, repo, file, sha=None):
+    prov_g = grlcPROV(user, repo)
+    data = utils.build_swagger_spec_user_friendly(user, repo, file, sha, prov_g)
+
+    resp_spec = make_response(jsonify(data))
+    resp_spec.headers['Content-Type'] = 'application/json'
+
+    resp_spec.headers['Cache-Control'] = static.CACHE_CONTROL_POLICY # Caching JSON specs for 15 minutes
+
+    return resp_spec
+
+# Returns the yasgui page with the data of the query for which the show event is fired.
+@app.route('/yasgui', methods=['GET', 'POST'])
+def yasgui():
+    return render_template('yasgui.html', data=request.form.getlist('yasgui_query'))
+
+
 if __name__ == '__main__':
     app.run(host=static.DEFAULT_HOST, port=static.DEFAULT_PORT, debug=True)

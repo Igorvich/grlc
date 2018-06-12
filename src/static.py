@@ -24,6 +24,8 @@ LOG_FORMAT = '%(asctime)-15s [%(levelname)s] (%(module)s.%(funcName)s) %(message
 # GitHub base URLS
 GITHUB_RAW_BASE_URL = 'https://raw.githubusercontent.com/'
 GITHUB_API_BASE_URL = 'https://api.github.com/repos/'
+GITHUB_API_URL = 'https://api.github.com/'
+GITHUB_RATE_LIMIT_URL = 'https://api.github.com/rate_limit'
 
 # Cache control
 # CACHE_CONTROL_POLICY = 'public, max-age=60'

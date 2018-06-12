@@ -12,6 +12,11 @@ ENV GRLC_INSTALL_DIR="${GRLC_HOME}/grlc" \
     GRLC_BUILD_DIR="${GRLC_CACHE_DIR}/build" \
     GRLC_RUNTIME_DIR="${GRLC_CACHE_DIR}/runtime"
 
+ENV DEBUG=true \
+    USERMAP_GID=1000 \
+    USERMAP_UID=1000 \
+	GRLC_GITHUB_ACCESS_TOKEN=<Insert github access token>
+
 RUN apt-get update \
  && DEBIAN_FRONTEND=noninteractive apt-get install -y nginx git-core logrotate python-pip locales gettext-base sudo npm nodejs-legacy\
  && update-locale LANG=C.UTF-8 LC_MESSAGES=POSIX \

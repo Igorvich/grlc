@@ -1,5 +1,7 @@
 import static as static
 import gquery as gquery
+import requests
+import time
 import cgi
 from rdflib import Graph
 import traceback
@@ -346,3 +348,110 @@ def build_swagger_spec(user, repo, sha, serverName, prov, gh_repo):
             }
         }
     return swag
+
+# Collects the data needed for the user friendly part of the application.
+# This includes data about queries uploaded on github.
+def build_swagger_spec_user_friendly(user, repo, file, sha, prov):
+    data = {}
+    data["user"] = user
+    data["repo"] = repo
+
+    spec = build_spec_user_friendly(user, repo,file, sha, prov)
+
+    data["items"] = []
+    for item in spec:
+        d = {}
+
+        d["tags"] = item['tags']
+        d["call_name"] = item['call_name']
+        d["summary"] = item['summary']
+        # d["description"] = item['description'] + "\n<pre>\n{}\n</pre>".format(cgi.escape(item['query']))
+        d["description"] = item['description']
+        d["produces"] = ["text/csv", "application/json", "text/html"]
+        d["parameters"] = item['params'] if 'params' in item else None
+        d["query"] = item['query']
+        data["items"].append(d)
+    return data
+
+# Searches github based on the data given for the search.
+def search_github(type_of_search, variables, organisation):
+    variables = variables.split(',')
+    words_to_look_for = ""
+    for word in variables:
+        words_to_look_for += word + "+in:file+"
+    words_to_look_for += "language:sparql+"
+    words_to_look_for += "org:" + organisation
+    api_repo_uri = static.GITHUB_API_URL + type_of_search + '/code?q=' + words_to_look_for
+    resp = requests.get(api_repo_uri, headers={'Authorization': 'token {}'.format(static.ACCESS_TOKEN)}).json()
+
+    return resp
+
+# Gets the rate limit for the application based on the token provided for the application.
+def get_rate_limit():
+    api_rate_limit_uri = static.GITHUB_RATE_LIMIT_URL
+    rate_limit_result = requests.get(api_rate_limit_uri, headers={'Authorization': 'token {}'.format(static.ACCESS_TOKEN)}).json()
+    return rate_limit_result["rate"]["remaining"]
+
+# Gets the rate limit information, including time untill refill and times to search left.
+def get_rate_limit_reset_data():
+    api_rate_limit_uri = static.GITHUB_RATE_LIMIT_URL
+    rate_limit_result = requests.get(api_rate_limit_uri, headers={'Authorization': 'token {}'.format(static.ACCESS_TOKEN)}).json()
+
+    reset_milliseconds = rate_limit_result["rate"]["reset"]
+    rate_limit = rate_limit_result["rate"]["limit"]
+    rate_remaining = rate_limit_result["rate"]["remaining"]
+    millis = int(round(time.time()))
+    time_to_wait = reset_milliseconds - millis
+    time_to_wait = time_to_wait / 60
+
+    data = {}
+    data['message'] = 'Rate limit exceeded'
+    data['waiting_time'] = time_to_wait
+    data['rate_remaining'] = rate_remaining
+    data['rate_limit'] = rate_limit
+    return data
+
+# Returns the data for the user friendly side of the application.
+# This concludes data off the queries looked for on github.
+def build_spec_user_friendly(user, repo, file, sha, prov, extraMetadata=[]):
+    '''
+    Build grlc specification for the given github user / repo
+    '''
+    api_repo_uri = static.GITHUB_API_BASE_URL + user + '/' + repo #+ '/' + file # either here or after contents
+    api_repo_content_uri = api_repo_uri + '/contents' + '/' + file
+
+    params = {'ref' : 'master'}
+    if sha is not None:
+        params = {'ref' : sha}
+
+    resp = requests.get(api_repo_content_uri, headers={'Authorization': 'token {}'.format(static.ACCESS_TOKEN)}, params=params).json()
+
+    # glogger.debug(resp)
+    raw_repo_uri = static.GITHUB_RAW_BASE_URL + user + '/' + repo + '/master/'
+    if sha is not None:
+        raw_repo_uri = static.GITHUB_RAW_BASE_URL + user + '/' + repo + '/blob/{}/'.format(sha)
+    # Fetch all .rq files
+    items = []
+    resp_new = []
+    resp_new.append(resp)
+
+    for c in resp_new:
+        if ".rq" in c['name'] or ".tpf" in c['name'] or ".sparql" in c['name']:
+            call_name = c['name'].split('.')[0]
+            # Retrieve extra metadata from the query decorators
+            raw_query_uri = c['download_url']
+            resp_new = requests.get(raw_query_uri, headers={'Authorization': 'token {}'.format(static.ACCESS_TOKEN)}).text
+
+            # Add query URI as used entity by the logged activity
+            prov.add_used_entity(raw_query_uri)
+
+            item = None
+            if ".rq" in c['name'] or ".sparql" in c['name']:
+                item = process_sparql_query_text(resp_new, raw_repo_uri, call_name, extraMetadata)
+            elif ".tpf" in c['name']:
+                item = process_tpf_query_text(resp_new, raw_repo_uri, call_name, extraMetadata)
+            if item:
+                items.append(item)
+    return items
+
+

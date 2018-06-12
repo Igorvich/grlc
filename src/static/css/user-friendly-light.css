@@ -1,0 +1,20 @@
+body {
+    color: #010101;
+    background-color: #f2f2f2;
+}
+.repo-search-result-data-container{
+    color: #000;
+    background-color: #f0e0ca;
+}
+.repo-search-result-item-header{
+    background-color: #a3b86c;
+}
+.repo-search-result-item-body{
+    background-color: #a3b86c;
+}
+.returned-data-export-container{
+    background-color: #a3b86c;
+}
+hr{
+    border-top: 4px solid #565656;
+}

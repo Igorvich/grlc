@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>grlc</title>
+    <link rel="shortcut icon" href="{{ url_for('.static', filename='favicon.ico') }}">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <link href="{{ url_for('.static', filename='css/grlc.css') }}" rel="stylesheet">
+    <link href="{{ url_for('.static', filename='css/user-friendly.css') }}" rel="stylesheet">
+    <link href="{{ url_for('.static', filename='css/user-friendly-light.css') }}" rel="stylesheet" id="toggle_theme">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+    <script src="{{ url_for('.static', filename='js/userFriendly.js') }}"></script>
+</head>
+<body>
+<div class="user-friendly-wrapper">
+    <div class="user-friendly-menu-banner">
+{#        <button class="btn btn-default toggle-theme-button" id="toggleThemeButton">Toggle theme</button>#}
+        <a href="/">
+            <button class="btn btn-default home-button" id="homeButton">Home</button>
+        </a>
+    </div>
+    <div class="user-friendly-wrapper-inner">
+        <div class="container">
+            <div class="repo-search">
+                <h2>Search repositories</h2>
+                <label for="organisationInput">Organisation to look for:</label><br>
+                <input type="text" id="organisationInput" class="form-control repo-search-input" value="clariah"><br>
+                <label for="wordsContainingInput">Words to look for: (comma seperated)</label><br>
+                <input type="text" id="wordsContainingInput" class="form-control repo-search-input"><br>
+                <hr>
+                <button id="searchButton" class="btn btn-success">Search</button>
+            </div>
+            <div id="repo-search-result"></div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
